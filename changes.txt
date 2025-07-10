@@ -1,0 +1,64 @@
+// creating a new database
+use mongoShopDB
+
+// creation and validation of 'users' collection
+db.users.createCollection({'users'},{
+    validator: {
+            $jsonSchema: {
+              bsonType: 'object',
+              title: 'User Object Validation',
+              required: [
+                'name',
+                'email',
+                'password',
+                'phone_number',
+                'address'
+              ],
+              properties: {
+                name: {
+                  bsonType: 'string',
+                  description: 'name must be a string and is required.'
+                },
+                email: {
+                  bsonType: 'string',
+                  description: 'email must be a string and is required.'
+                },
+                password: {
+                  bsonType: 'string',
+                  minLength: 8,
+                  description: 'password is required and must be atleast 8 characters long.'
+                },
+                phone_number: {
+                  bsonType: 'string',
+                  description: 'phone number is required.'
+                },
+                address: {
+                  bsonType: 'object',
+                  properties: {
+                    house_name: {
+                      bsonType: 'string'
+                    },
+                    street: {
+                      bsonType: 'string'
+                    },
+                    city: {
+                      bsonType: 'string'
+                    },
+                    district: {
+                      bsonType: 'string'
+                    },
+                    pin_code: {
+                      bsonType: 'int',
+                      description: 'pin code must be a number.'
+                    }
+                  }
+                },
+                dob: {
+                  bsonType: 'date',
+                  description: 'date of birth must be entered in standard ISO format.'
+                }
+              }
+            }
+        }
+    }
+)

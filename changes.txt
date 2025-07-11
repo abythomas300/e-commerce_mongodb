@@ -162,3 +162,33 @@ db.createCollection('cart', {
   }
 }
 })
+
+//creation and validation for 'review' collection
+db.createCollection('reviews',{
+  validator: {
+    $jsonSchema: {
+      bsonType: 'object',
+      description: 'Validation for reviews collection',
+      required: ['user', 'review','product'],
+      properties:{
+        user: {
+          bsonType: 'objectId',
+          description: 'required and should have reference to users collection'
+        },
+        review: {
+          bsonType: 'string',
+          description: 'required and should be in string format'
+        },
+        stars: {
+          bsonType: 'int',
+          maximum:5,
+          description: 'only allowed upto 5 starts'
+        },
+        product: {
+          bsonType: 'objectId',
+          description: 'required and should have reference to products collection'
+        }
+      }
+    }
+  }
+})

@@ -62,3 +62,30 @@ db.users.createCollection({'users'},{
         }
     }
 )
+
+//creation and validation for 'products' collection
+db.createCollection('products', {
+  validator: {
+    $jsonSchema: {
+      // validation rules for the entire collection
+      bsonType: 'object',
+      description: 'Validation for Products Collection',
+      required: ['name', 'price', 'category'],
+      properties: {
+        //validation rules for each fields
+        name: {
+          bsonType: 'string',
+          description: 'product name must be a string.'
+        },
+        price: {
+          bsonType: 'double',
+          description: 'price must be a decimal value.'
+        },
+        category:{
+          bsonType: 'objectId',
+          description: 'category id must be referenced from the category collection.'
+        }
+      }
+    }
+  }
+})

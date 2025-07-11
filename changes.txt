@@ -78,7 +78,7 @@ db.createCollection('products', {
           description: 'product name must be a string.'
         },
         price: {
-          bsonType: 'double',
+          bsonType: ['double', 'int'],
           description: 'price must be a decimal value.'
         },
         category:{
@@ -90,7 +90,7 @@ db.createCollection('products', {
   }
 })
 
-// creation and validation for 'categories collection'
+// creation and validation for 'categories' collection
 db.createCollection('categories',{
   validator: {
     $jsonSchema: {
@@ -106,5 +106,31 @@ db.createCollection('categories',{
       }
       }
     }
+  }
+})
+
+//creation and validation for 'orders' collection
+db.createCollection('orders', {
+  validator: {
+    {
+  $jsonSchema: {
+    bsonType: 'object',
+    description: 'Validation for Order Collection',
+    required: [
+      'ordered_by',
+      'order_date'
+    ],
+    properties: {
+      ordered_by: {
+        bsonType: 'objectId',
+        description: 'ordered_by is required and should have reference id to users collection'
+      },
+      order_date: {
+        bsonType: 'date',
+        description: 'date is requried and should be entered in standard format'
+      }
+    }
+  }
+}
   }
 })

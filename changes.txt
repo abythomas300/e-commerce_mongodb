@@ -134,3 +134,31 @@ db.createCollection('orders', {
 }
   }
 })
+
+//creation and validation for 'cart' collection
+db.createCollection('cart', {
+  validator: {
+  $jsonSchema: {
+    bsonType: 'object',
+    description: 'Validation for Cart Collection',
+    required: [
+      'owner',
+      'products'
+    ],
+    properties: {
+      owner: {
+        bsonType: 'objectId',
+        description: 'owner field is required and should have a reference from users collection.'
+      },
+      products: {
+        bsonType: 'array',
+        description: 'products is required and can have more than 1 objectId referencing to products collection.',
+        items: {
+          bsonType: 'objectId',
+          description: 'orderId should have atleast one refernce to products collection.'
+        }
+      }
+    }
+  }
+}
+})

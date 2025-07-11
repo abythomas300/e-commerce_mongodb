@@ -89,3 +89,22 @@ db.createCollection('products', {
     }
   }
 })
+
+// creation and validation for 'categories collection'
+db.createCollection('categories',{
+  validator: {
+    $jsonSchema: {
+      // validation rules for the entire collection
+      bsonType: 'object',
+      description: 'Validation for Category Collection',
+      required: ['category_name'],
+      // validation rules for each fields
+      properties: {
+        category_name: {
+        bsonType: 'string',
+        description: 'category name should be a string and is required'
+      }
+      }
+    }
+  }
+})

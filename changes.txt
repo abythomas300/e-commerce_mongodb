@@ -192,3 +192,15 @@ db.createCollection('reviews',{
     }
   }
 })
+
+// Get all orders with product details using $lookup
+db.orders.aggregate([
+  {
+    $lookup: {
+      from: 'products',
+      localField: 'products',
+      foreignField: '_id',
+      as: 'Products Details'
+    }
+  }
+])

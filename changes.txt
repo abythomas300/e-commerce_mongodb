@@ -228,3 +228,23 @@ db.products.aggregate([
     }
   }
 ])
+
+// Average product rating (with all details of each product)
+db.reviews.aggregate([
+  {
+    //stage 1: Grouping all products + average rating of each
+    $group: {
+      _id: '$product',
+      Average_Rating: { $avg: '$stars' }
+    }
+  },
+  {
+    //stage 2: Displaying product information
+    $lookup: {
+      from: 'products',
+      localField: '_id', //<--- _id of the 'reviews' collection from the output of the previous stage
+      foreignField: '_id', //<--- _id of the products collection (The Reference)
+      as: 'Product Details'
+    }
+  }
+])

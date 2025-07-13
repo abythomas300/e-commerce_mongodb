@@ -216,3 +216,15 @@ db.reviews.aggregate([
     }
   }
 ])
+
+//Get all products along with their category info
+db.products.aggregate([
+  {
+    $lookup: {
+      from: 'categories',
+      localField: 'category',
+      foreignField: '_id',
+      as: 'Category Details'
+    }
+  }
+])

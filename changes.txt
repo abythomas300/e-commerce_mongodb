@@ -204,3 +204,15 @@ db.orders.aggregate([
     }
   }
 ])
+
+// Get user details along with their reviews
+db.reviews.aggregate([
+  {
+    $lookup: {
+      from: 'users',
+      localField: 'user',
+      foreignField: '_id',
+      as: 'User Details'
+    }
+  }
+])

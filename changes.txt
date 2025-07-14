@@ -268,3 +268,21 @@ db.reviews.aggregate([
     }
   }
 ])
+
+// Total number of orders placed by each user (with user details)
+db.orders.aggregate([
+  {
+    $group: {
+      _id: '$ordered_by',
+      "Total orders by this Person": {$count:{}}  //<-- counts the number of documents(orders) in each user
+    }
+  },
+  {
+    $lookup: {
+      from: 'users',
+      localField: '_id',
+      foreignField: '_id',
+      as: "User Details"
+    }
+  }
+])

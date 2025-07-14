@@ -286,3 +286,35 @@ db.orders.aggregate([
     }
   }
 ])
+
+// Total Sales per product
+db.orders.aggregate([
+  {
+    $unwind: '$products'  // <---- products are initially in a array so difficult to group each, so changing them to a normal object format using $unwind(Creates n copies of the same initial document each with respective product elements)
+  },
+  {
+    $group: {
+      _id: '$products',  // <---- grouping based on each products
+      "Number of orders": {$count:{}}  // <--- counting number of orders of each product by counting the number of documents under each prodcutId 
+    }
+  },
+  {
+    $lookup: {         // <---- displaying details of each products 
+      from: 'products',
+      localField: '_id',
+      foreignField: '_id',
+      as: "Product Details"
+    }
+  },
+  {
+    $unwind: '$Product Details'  // <---- unwinding the product details (which was in a array initially) so that each elements inside it can be accessed using the dot (.) operator
+  },
+  {
+    $project: {
+      'Number of orders': 1,  // <--- (inclusion) displaying the number of orders
+      'Product Name': '$Product Details.name',  // <--- getting the name of each product using dot operator
+      'Product Price': '$Product Details.price', //<--- getting the price of each product using dot operator
+      'Total Sales amount': {$multiply:['$Number of orders','$Product Details.price']} //<--- multiplying price and orders of each product to get the sales amount
+    }
+  }
+])

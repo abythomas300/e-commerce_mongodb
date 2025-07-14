@@ -248,3 +248,23 @@ db.reviews.aggregate([
     }
   }
 ])
+
+// Top 3 highest rated products (with the product details)
+db.reviews.aggregate([
+  {
+    $sort: {
+      stars: -1  //<-- stage to get the documents sorted in descending order of the stars(rating)
+    }
+  },
+  {
+    $limit: 3  //<-- stage to limit the results by the first 3 documents
+  },
+  {
+    $lookup: {
+      from: 'products',
+      localField: 'product',
+      foreignField: '_id',
+      as: 'Product Details'
+    }
+  }
+])

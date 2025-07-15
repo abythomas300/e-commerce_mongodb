@@ -318,3 +318,50 @@ db.orders.aggregate([
     }
   }
 ])
+
+// Total revenue per day
+db.orders.aggregate([
+  {
+    $unwind: '$products'
+  },
+  {
+    $lookup: {
+      from: 'products',
+      localField: 'products',
+      foreignField: '_id',
+      as: "Product Details"
+    }
+  },
+  {
+    $unwind: '$Product Details'
+  },
+  {
+    $group: {
+      _id: '$order_date',
+      "Total Revenue": {$sum:'$Product Details.price'}
+    }
+  },
+  {
+    $project: {
+      _id:0,
+      "Total Revenue": 1,
+      // "Day": {$dayOfMonth: '$_id'}, -- picking up only day from ISODate
+      // "Month": {$month: '$_id'},  -- picking up only month from ISODate
+      // "Year":{$year:'$_id'}, -- picking up only year from ISODate
+      "Date": {  // first converting day, month and year into string and then concatenating them with hiphen to get the fomat dd-mm-yyyy
+      $concat:[
+        { $toString: {$dayOfMonth: '$_id'}  },
+        '-',
+        { $toString: {$month: '$_id'}  },
+        '-',
+        {$toString: {$year: '$_id'}}
+      ]
+    }
+    }
+  },
+    {
+      $sort: {
+        _id: -1
+      }
+  }
+])

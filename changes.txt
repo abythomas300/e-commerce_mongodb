@@ -365,3 +365,7 @@ db.orders.aggregate([
       }
   }
 ])
+
+// create index on email field in users collection (single index)
+ db.users.createIndex({email:1})
+

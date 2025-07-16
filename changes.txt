@@ -374,3 +374,56 @@ db.products.createIndex({name:'text'})  // <-- products name can now be searched
 
 // create index for category in products collection (single index)
 db.products.createIndex({category:1}) 
+
+// displaying daily revenue data in another dailySalesSummary collection using $merge
+db.orders.aggregate([
+  {
+    $unwind: '$ordered_products'
+  },
+  {
+    $lookup: {
+      from: 'products',
+      localField: 'ordered_products',
+      foreignField: '_id',
+      as: "Product Details"
+    }
+  },
+  {
+    $unwind: '$Product Details'
+  },
+  {
+    $group: {
+      _id: '$ordered_date',
+      'Number of products in this day':{$count:{}},
+      'Total revenue on this day':{$sum:'$Product Details.price'},
+      'Products ordered in this day': {$push:'$products'},
+    }
+  },
+  {
+    $sort: {
+      _id: 1  // oldest to latest
+    }
+  },
+    {
+      $project: {
+        _id: 0,
+        "Date": { 
+      $concat:[
+        { $toString: {$dayOfMonth: '$_id'}  },
+        '-',
+        { $toString: {$month: '$_id'}  },
+        '-',
+        {$toString: {$year: '$_id'}}
+      ]
+    },
+       'Number of products in this day': 1,
+        'Total revenue on this day': 1,
+        'All Products ordered in this day':1   
+    }
+  },
+  {
+    $merge: {
+     into: 'dailySalesSummary'
+  }
+}
+])

@@ -369,3 +369,5 @@ db.orders.aggregate([
 // create index on email field in users collection (single index)
  db.users.createIndex({email:1})
 
+// create index for name in products collection (text index) 
+db.products.createIndex({name:'text'})  // <-- products name can now be searched using keywords.. (by using $text and $search operator)

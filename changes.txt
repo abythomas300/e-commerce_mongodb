@@ -371,3 +371,6 @@ db.orders.aggregate([
 
 // create index for name in products collection (text index) 
 db.products.createIndex({name:'text'})  // <-- products name can now be searched using keywords.. (by using $text and $search operator)
+
+// create index for category in products collection (single index)
+db.products.createIndex({category:1}) 
